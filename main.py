@@ -96,100 +96,94 @@ def main():
             face_rects = detector(frame, 0)
 
             if len(face_rects) > 0:
-                shape = predictor(frame, face_rects[0])
 
-                shape = face_utils.shape_to_np(shape)
+                for face in face_rects:
+                    shape = predictor(frame, face)
 
+                    shape = face_utils.shape_to_np(shape)
+                    reprojectdst, euler_angle = get_head_pose(shape)
+                    print('---- euler_angle ----')
 
+                    print(euler_angle)
 
-                reprojectdst, euler_angle = get_head_pose(shape)
-                print('---- euler_angle ----')
-
-                print(euler_angle)
-
-                for (x, y) in shape:
-                    cv2.circle(frame, (x, y), 1, (0, 0, 255), 5)
-
-
-                # 视线检测
-                RightEys = (int((shape[36][0] + shape[39][0]) / 2), int((shape[36][1] + shape[39][1]) / 2))
-                LeftEys = (int((shape[42][0] + shape[45][0]) / 2), int((shape[42][1] + shape[45][1]) / 2))
+                    for (x, y) in shape:
+                        cv2.circle(frame, (x, y), 1, (0, 0, 255), 5)
 
 
-                AjustPitch = 7.11
-                AjustYaw = 5.02
-                AjustRoll = 2.51
-
-                AxperimentAjust = 20.0
-
-                pitch = euler_angle[0, 0]
-                yaw = euler_angle[1, 0] - AxperimentAjust
-                roll = euler_angle[2,0]
+                    # 视线检测
+                    RightEys = (int((shape[36][0] + shape[39][0]) / 2), int((shape[36][1] + shape[39][1]) / 2))
+                    LeftEys = (int((shape[42][0] + shape[45][0]) / 2), int((shape[42][1] + shape[45][1]) / 2))
 
 
-                euler_angle[1,0] = euler_angle[1,0] - 25.0
+                    AjustPitch = 7.11
+                    AjustYaw = 5.02
+                    AjustRoll = 2.51
 
-                # 由于光的反射性，假如摄像头能观察到你的眼睛，说么你的眼睛也在看黑板，视为专注
-                # 下面判断学生的头转向
+                    AxperimentAjust = 20.0
 
-                LimitTurn = 60.0
-
-
-                cv2.circle(frame, LeftEys, 1, (0, 0, 255), -1)
-                cv2.putText(frame, 'left eye', LeftEys, cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 0, 0), 1)
-
-                cv2.circle(frame, RightEys, 1, (0, 0, 255), -1)
-                cv2.putText(frame, 'right eye', RightEys, cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 0, 0), 1)
-
-                LeftTopFacePoint = (shape[0][0], shape[19][1])
-                RightTopFacePoint = (shape[26][0], shape[19][1])
-                LeftDownFacePoint = (shape[0][0], shape[8][1])
-                RightDownFacePoint = (shape[26][0], shape[8][1])
+                    pitch = euler_angle[0, 0]
+                    yaw = euler_angle[1, 0] - AxperimentAjust
+                    roll = euler_angle[2,0]
 
 
-                LineColor = (0,255,255)
-                AllTurnAngle = abs(pitch - OldPitch) + abs(roll - OldRoll) + abs(yaw - OldYaw)
-                ResString = ''
-                if AllTurnAngle > LimitTurn:
-                    # print('Pitch Change:', pitch , OldPitch)
-                    # print('Roll Change:', roll , OldRoll)
-                    # print('Yawa Change:', yaw , OldYaw)
-                    # print('Not Focus!!')
-                    ResString = 'Not Focus'
-                    LineColor = (255, 0, 0)
-                else:
-                    # print('Focus')
-                    ResString = 'Focus'
+                    euler_angle[1,0] = euler_angle[1,0] - 25.0
+
+                    # 由于光的反射性，假如摄像头能观察到你的眼睛，说么你的眼睛也在看黑板，视为专注
+                    # 下面判断学生的头转向
+
+                    LimitTurn = 60.0
 
 
+                    cv2.circle(frame, LeftEys, 1, (0, 0, 255), -1)
+                    cv2.putText(frame, 'left eye', LeftEys, cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 0, 0), 1)
 
-                drawLine(frame, LeftTopFacePoint, RightTopFacePoint, LineColor)
-                drawLine(frame, LeftTopFacePoint, LeftDownFacePoint, LineColor)
-                drawLine(frame, RightTopFacePoint, RightDownFacePoint, LineColor)
-                drawLine(frame, LeftDownFacePoint, RightDownFacePoint, LineColor)
+                    cv2.circle(frame, RightEys, 1, (0, 0, 255), -1)
+                    cv2.putText(frame, 'right eye', RightEys, cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 0, 0), 1)
 
-                # print('AllTurnAngle :', AllTurnAngle)
+                    LeftTopFacePoint = (shape[0][0], shape[19][1])
+                    RightTopFacePoint = (shape[26][0], shape[19][1])
+                    LeftDownFacePoint = (shape[0][0], shape[8][1])
+                    RightDownFacePoint = (shape[26][0], shape[8][1])
+
+
+                    LineColor = (0,255,255)
+                    AllTurnAngle = abs(pitch - OldPitch) + abs(roll - OldRoll) + abs(yaw - OldYaw)
+                    ResString = ''
+                    if AllTurnAngle > LimitTurn:
+                        # print('Pitch Change:', pitch , OldPitch)
+                        # print('Roll Change:', roll , OldRoll)
+                        # print('Yawa Change:', yaw , OldYaw)
+                        # print('Not Focus!!')
+                        ResString = 'Not Focus'
+                        LineColor = (255, 0, 0)
+                    else:
+                        # print('Focus')
+                        ResString = 'Focus'
 
 
 
-                font_scale = 2
-                thickness = 2
-                x_offset = 1
-                y_offset = 1
-                #cv2.putText(frame, ResString, (LeftTopFacePoint[0] + x_offset, LeftTopFacePoint[1] + y_offset),  cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness, cv2.LINE_AA)
-                cv2.putText(frame, ResString, (LeftTopFacePoint[0] + x_offset, LeftTopFacePoint[1] + y_offset), cv2.FONT_HERSHEY_SIMPLEX, font_scale, LineColor, thickness, cv2.LINE_AA)
+                    drawLine(frame, LeftTopFacePoint, RightTopFacePoint, LineColor)
+                    drawLine(frame, LeftTopFacePoint, LeftDownFacePoint, LineColor)
+                    drawLine(frame, RightTopFacePoint, RightDownFacePoint, LineColor)
+                    drawLine(frame, LeftDownFacePoint, RightDownFacePoint, LineColor)
+
+                    font_scale = 2
+                    thickness = 2
+                    x_offset = 1
+                    y_offset = 1
+                    #cv2.putText(frame, ResString, (LeftTopFacePoint[0] + x_offset, LeftTopFacePoint[1] + y_offset),  cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness, cv2.LINE_AA)
+                    cv2.putText(frame, ResString, (LeftTopFacePoint[0] + x_offset, LeftTopFacePoint[1] + y_offset), cv2.FONT_HERSHEY_SIMPLEX, font_scale, LineColor, thickness, cv2.LINE_AA)
 
 
+                    OldPitch = pitch
+                    OldRoll = roll
+                    OldYaw = yaw
 
-                OldPitch = pitch
-                OldRoll = roll
-                OldYaw = yaw
 
+                cv2.imshow("demo", frame)
 
-            cv2.imshow("demo", frame)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
 
 
 if __name__ == '__main__':
