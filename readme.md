@@ -1,0 +1,34 @@
+
+### Visualization Analysis of Learning Attention Based on Single-image PnP Head Pose Estimation
+
+
+# Introduction
+
+Learning attention analysis of students is the important indicator of classroom teaching/learning quantitative evaluation. Owing to the fact that the head-mounted eye tracker is expensive and unsuitable to be widely used in the large-scale classroom evaluation under expenditure limitation, in this paper, we uses the PnP(Perspective-nPoint) method to estimate student's head pose for single-image. And then we achieve visualization of learning attention. Experiments demonstrate the following advantages of our method. (1) The method limits the average head-pose estimation errors under 4.88° with Biwi database. (2) This work has implemented student learning attention visualization analyses for three typical learning cases including engagement, attention, and disregard.
+
+
+# Method
+
+Based on the above discussion, this paper proposes a method for visualization analysis of learning attention based on Single-image and develops a corresponding system. The method has 6 steps sequentially.
+
+(1) Video frames acquisition. With the help of LifeCam camera, we acquire classroom teaching videos and extract out of all frames.
+
+(2) Calibration of camera parameters. To improve the head pose recognition accuracy, we use a convenient and accurate method in paper [5] to calibrate camera parameters.
+
+(3) Face detection. Us face from each video frame.
+
+e
+
+the face detection
+
+algorithm
+
+invented by Professor Yu Shiqi to detect
+
+(4) Facial feature point detection. With the Stochastic cascade regression tree , we can get the coordinate information of 19 facial feature points, which is used to provide 2D information of each frame image.
+
+algorithm
+
+(5) Head pose estimation. Using a standard facial statistical measurement model, we can get 3D coordinate information of each frame image, and then we can get the rotation and translation matrices, which mean the mapping relation between 2D and 3D models.
+
+(6) Students' sight location. With the use of the information of rotation and translation matrices, and spatial coordinate conversion, we can project the gaze point on the frame image of the teaching video.
