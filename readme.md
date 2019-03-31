@@ -13,7 +13,7 @@ Based on the above discussion, this paper proposes a method for visualization an
 
 1. Video frames acquisition. With the help of LifeCam camera, we acquire classroom teaching videos and extract out of all frames.
 
-2. Calibration of camera parameters. To improve the head pose recognition accuracy, we use a convenient and accurate method in paper [5] to calibrate camera parameters.
+2. （张氏标定法）Calibration of camera parameters. To improve the head pose recognition accuracy, we use a convenient and accurate method in paper [5] to calibrate camera parameters.
 
 3. Face detection. Us face from each video frame.the face detection algorithm invented by Professor Yu Shiqi to detect
 
