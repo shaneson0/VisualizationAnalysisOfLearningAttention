@@ -11,24 +11,14 @@ Learning attention analysis of students is the important indicator of classroom 
 
 Based on the above discussion, this paper proposes a method for visualization analysis of learning attention based on Single-image and develops a corresponding system. The method has 6 steps sequentially.
 
-(1) Video frames acquisition. With the help of LifeCam camera, we acquire classroom teaching videos and extract out of all frames.
+1. Video frames acquisition. With the help of LifeCam camera, we acquire classroom teaching videos and extract out of all frames.
 
-(2) Calibration of camera parameters. To improve the head pose recognition accuracy, we use a convenient and accurate method in paper [5] to calibrate camera parameters.
+2. Calibration of camera parameters. To improve the head pose recognition accuracy, we use a convenient and accurate method in paper [5] to calibrate camera parameters.
 
-(3) Face detection. Us face from each video frame.
+3. Face detection. Us face from each video frame.the face detection algorithm invented by Professor Yu Shiqi to detect
 
-e
+4. Facial feature point detection. With the Stochastic cascade regression tree , we can get the coordinate information of 19 facial feature points, which is used to provide 2D information of each frame image. algorithm
 
-the face detection
+5. Head pose estimation. Using a standard facial statistical measurement model, we can get 3D coordinate information of each frame image, and then we can get the rotation and translation matrices, which mean the mapping relation between 2D and 3D models.
 
-algorithm
-
-invented by Professor Yu Shiqi to detect
-
-(4) Facial feature point detection. With the Stochastic cascade regression tree , we can get the coordinate information of 19 facial feature points, which is used to provide 2D information of each frame image.
-
-algorithm
-
-(5) Head pose estimation. Using a standard facial statistical measurement model, we can get 3D coordinate information of each frame image, and then we can get the rotation and translation matrices, which mean the mapping relation between 2D and 3D models.
-
-(6) Students' sight location. With the use of the information of rotation and translation matrices, and spatial coordinate conversion, we can project the gaze point on the frame image of the teaching video.
+6. Students' sight location. With the use of the information of rotation and translation matrices, and spatial coordinate conversion, we can project the gaze point on the frame image of the teaching video.
