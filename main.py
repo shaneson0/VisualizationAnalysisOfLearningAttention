@@ -43,6 +43,13 @@ line_pairs = [[0, 1], [1, 2], [2, 3], [3, 0],
               [4, 5], [5, 6], [6, 7], [7, 4],
               [0, 4], [1, 5], [2, 6], [3, 7]]
 
+def draw_text(coordinates, image_array, text, color, x_offset=0, y_offset=0,
+                                                font_scale=2, thickness=2):
+    x, y = coordinates[:2]
+    cv2.putText(image_array, text, (x + x_offset, y + y_offset),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                font_scale, color, thickness, cv2.LINE_AA)
+
 
 
 def get_head_pose(shape):
@@ -66,7 +73,7 @@ def get_head_pose(shape):
 
 
 def drawLine(frame, Point1, Point2, Color=(0,255,255)):
-    cv2.line(frame, Point1, Point2, color=Color)
+    cv2.line(frame, Point1, Point2, color=Color, thickness=2)
 
 
 def main():
@@ -100,13 +107,13 @@ def main():
 
                 print(euler_angle)
 
+                for (x, y) in shape:
+                    cv2.circle(frame, (x, y), 1, (0, 0, 255), 5)
 
 
                 # 视线检测
                 RightEys = (int((shape[36][0] + shape[39][0]) / 2), int((shape[36][1] + shape[39][1]) / 2))
                 LeftEys = (int((shape[42][0] + shape[45][0]) / 2), int((shape[42][1] + shape[45][1]) / 2))
-
-
 
 
                 AjustPitch = 7.11
@@ -139,27 +146,44 @@ def main():
                 LeftDownFacePoint = (shape[0][0], shape[8][1])
                 RightDownFacePoint = (shape[26][0], shape[8][1])
 
-                drawLine(frame, LeftTopFacePoint, RightTopFacePoint)
-                drawLine(frame, LeftTopFacePoint, LeftDownFacePoint)
-                drawLine(frame, RightTopFacePoint, RightDownFacePoint)
-                drawLine(frame, LeftDownFacePoint, RightDownFacePoint)
 
+                LineColor = (0,255,255)
                 AllTurnAngle = abs(pitch - OldPitch) + abs(roll - OldRoll) + abs(yaw - OldYaw)
+                ResString = ''
                 if AllTurnAngle > LimitTurn:
-                    print('Pitch Change:', pitch , OldPitch)
-                    print('Roll Change:', roll , OldRoll)
-                    print('Yawa Change:', yaw , OldYaw)
-
-                    print('Not Focus!!')
+                    # print('Pitch Change:', pitch , OldPitch)
+                    # print('Roll Change:', roll , OldRoll)
+                    # print('Yawa Change:', yaw , OldYaw)
+                    # print('Not Focus!!')
+                    ResString = 'Not Focus'
+                    LineColor = (255, 0, 0)
                 else:
-                    print('Focus')
+                    # print('Focus')
+                    ResString = 'Focus'
 
-                print('AllTurnAngle :', AllTurnAngle)
+
+
+                drawLine(frame, LeftTopFacePoint, RightTopFacePoint, LineColor)
+                drawLine(frame, LeftTopFacePoint, LeftDownFacePoint, LineColor)
+                drawLine(frame, RightTopFacePoint, RightDownFacePoint, LineColor)
+                drawLine(frame, LeftDownFacePoint, RightDownFacePoint, LineColor)
+
+                # print('AllTurnAngle :', AllTurnAngle)
+
+
+
+                font_scale = 2
+                thickness = 2
+                x_offset = 1
+                y_offset = 1
+                #cv2.putText(frame, ResString, (LeftTopFacePoint[0] + x_offset, LeftTopFacePoint[1] + y_offset),  cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness, cv2.LINE_AA)
+                cv2.putText(frame, ResString, (LeftTopFacePoint[0] + x_offset, LeftTopFacePoint[1] + y_offset), cv2.FONT_HERSHEY_SIMPLEX, font_scale, LineColor, thickness, cv2.LINE_AA)
+
+
 
                 OldPitch = pitch
                 OldRoll = roll
                 OldYaw = yaw
-
 
 
             cv2.imshow("demo", frame)
