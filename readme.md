@@ -4,6 +4,8 @@
 ![Focus.jpeg](https://upload-images.jianshu.io/upload_images/5786775-e326541fdfc61552.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
+![Not Fucus.jpeg](https://upload-images.jianshu.io/upload_images/5786775-5482d6a4f4065c35.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 # Introduction
 
 Learning attention analysis of students is the important indicator of classroom teaching/learning quantitative evaluation. Owing to the fact that the head-mounted eye tracker is expensive and unsuitable to be widely used in the large-scale classroom evaluation under expenditure limitation, in this paper, we uses the PnP(Perspective-nPoint) method to estimate student's head pose for single-image. And then we achieve visualization of learning attention. Experiments demonstrate the following advantages of our method. (1) The method limits the average head-pose estimation errors under 4.88° with Biwi database. (2) This work has implemented student learning attention visualization analyses for three typical learning cases including engagement, attention, and disregard.

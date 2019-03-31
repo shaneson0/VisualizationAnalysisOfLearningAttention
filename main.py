@@ -122,7 +122,7 @@ def main():
                     AxperimentAjust = 20.0
 
                     pitch = euler_angle[0, 0]
-                    yaw = euler_angle[1, 0] - AxperimentAjust
+                    yaw = euler_angle[1, 0]
                     roll = euler_angle[2,0]
 
 
@@ -149,7 +149,11 @@ def main():
                     LineColor = (0,255,255)
                     AllTurnAngle = abs(pitch - OldPitch) + abs(roll - OldRoll) + abs(yaw - OldYaw)
                     ResString = ''
-                    if AllTurnAngle > LimitTurn:
+                    if pitch > 60.0 or pitch < -60.0:
+                        ResString = 'Not Focus'
+                        LineColor = (255, 0, 0)
+
+                    elif AllTurnAngle > LimitTurn:
                         # print('Pitch Change:', pitch , OldPitch)
                         # print('Roll Change:', roll , OldRoll)
                         # print('Yawa Change:', yaw , OldYaw)
@@ -159,8 +163,6 @@ def main():
                     else:
                         # print('Focus')
                         ResString = 'Focus'
-
-
 
                     drawLine(frame, LeftTopFacePoint, RightTopFacePoint, LineColor)
                     drawLine(frame, LeftTopFacePoint, LeftDownFacePoint, LineColor)
