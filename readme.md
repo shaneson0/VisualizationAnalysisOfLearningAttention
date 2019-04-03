@@ -38,7 +38,7 @@ Because the project only have one camera, It's not easy to locate a precise sigh
 
 #### Quantization
 
-To make the evaluation Quantization, I extract head pose eatimation's Information and Lip change Angle, use the formula to calculate the score which is used to evaluate student's attention.
+To make the evaluation Quantization, I extract head pose eatimation's Information and Lip change Angle, use the formula to calculate the score and evaluate student's attention.
 
 ```python
     Score = 0.8 * math.cos(yaw * math.pi / 180.0 ) + 0.2 * math.sin(LipAngle * math.pi / 180.0)
