@@ -2,14 +2,14 @@
 
 ### Visualization Analysis of Learning Attention Based on Single-image PnP Head Pose Estimation
 
-![image.png](https://upload-images.jianshu.io/upload_images/5786775-413ca7beebff0eb1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+<div width='30%'>![image.png](https://upload-images.jianshu.io/upload_images/5786775-413ca7beebff0eb1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
-![image.png](https://upload-images.jianshu.io/upload_images/5786775-22342ed46234d3e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+<div width='30%'>![image.png](https://upload-images.jianshu.io/upload_images/5786775-22342ed46234d3e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 
-![image.png](https://upload-images.jianshu.io/upload_images/5786775-05d0bfdf4101ea24.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+<div width='30%'>![image.png](https://upload-images.jianshu.io/upload_images/5786775-05d0bfdf4101ea24.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 # Introduction
