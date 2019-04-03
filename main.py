@@ -4,6 +4,9 @@ import cv2
 import dlib
 import numpy as np
 from imutils import face_utils
+import utils
+import math
+
 
 face_landmark_path = './shape_predictor_68_face_landmarks.dat'
 
@@ -85,11 +88,6 @@ def main():
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(face_landmark_path)
 
-
-    OldPitch = 0
-    OldYaw = 0
-    OldRoll = 0
-
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
@@ -102,11 +100,9 @@ def main():
 
                     shape = face_utils.shape_to_np(shape)
                     reprojectdst, euler_angle = get_head_pose(shape)
-                    print('---- euler_angle ----')
 
-                    print(euler_angle)
-
-                    for (x, y) in shape:
+                    for idx, (x, y) in enumerate(shape):
+                        # cv2.putText(frame, str(idx), (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 0, 0), 1)
                         cv2.circle(frame, (x, y), 1, (0, 0, 255), 5)
 
 
@@ -115,12 +111,6 @@ def main():
                     LeftEys = (int((shape[42][0] + shape[45][0]) / 2), int((shape[42][1] + shape[45][1]) / 2))
 
 
-                    AjustPitch = 7.11
-                    AjustYaw = 5.02
-                    AjustRoll = 2.51
-
-                    AxperimentAjust = 20.0
-
                     pitch = euler_angle[0, 0]
                     yaw = euler_angle[1, 0]
                     roll = euler_angle[2,0]
@@ -128,10 +118,6 @@ def main():
 
                     euler_angle[1,0] = euler_angle[1,0] - 25.0
 
-                    # 由于光的反射性，假如摄像头能观察到你的眼睛，说么你的眼睛也在看黑板，视为专注
-                    # 下面判断学生的头转向
-
-                    LimitTurn = 60.0
 
 
                     cv2.circle(frame, LeftEys, 1, (0, 0, 255), -1)
@@ -145,42 +131,58 @@ def main():
                     LeftDownFacePoint = (shape[0][0], shape[8][1])
                     RightDownFacePoint = (shape[26][0], shape[8][1])
 
+                    # Lip Angle
 
-                    LineColor = (0,255,255)
-                    AllTurnAngle = abs(pitch - OldPitch) + abs(roll - OldRoll) + abs(yaw - OldYaw)
-                    ResString = ''
-                    if pitch > 60.0 or pitch < -60.0:
-                        ResString = 'Not Focus'
-                        LineColor = (255, 0, 0)
+                    LeftMousePoint = (shape[48][0], shape[48][1])
+                    RightMousePoint = (shape[54][0], shape[54][1])
+                    TopMousePoint = (shape[51][0], shape[51][1])
+                    DownMousePoint = (shape[57][0], shape[57][1])
+                    drawLine(frame, LeftMousePoint, TopMousePoint, (220, 255, 110))
+                    drawLine(frame, LeftMousePoint, DownMousePoint, (220, 255, 110))
+                    drawLine(frame, LeftMousePoint, RightMousePoint, (220, 255, 110))
 
-                    elif AllTurnAngle > LimitTurn:
-                        # print('Pitch Change:', pitch , OldPitch)
-                        # print('Roll Change:', roll , OldRoll)
-                        # print('Yawa Change:', yaw , OldYaw)
-                        # print('Not Focus!!')
-                        ResString = 'Not Focus'
-                        LineColor = (255, 0, 0)
+                    L1 = [TopMousePoint[0] - LeftMousePoint[0], TopMousePoint[1] - LeftMousePoint[1]]
+                    L2 = [RightMousePoint[0] - LeftMousePoint[0], RightMousePoint[1] - LeftMousePoint[1]]
+                    L3 = [DownMousePoint[0] - LeftMousePoint[1], DownMousePoint[1] - LeftMousePoint[1]]
+                    MouseTopAngle = utils.angle(L1, L2)
+                    MouseDownAngle = utils.angle(L3, L2)
+                    LipAngle = MouseDownAngle - MouseTopAngle
+
+
+                    utils.draw_axis(frame, yaw, pitch, roll, tdx=shape[30][0], tdy=shape[30][1], size=200)
+
+
+                    # 检测失效
+                    if yaw > 30.0 or yaw < -30.0:
+                        Point = -1
+                    elif LipAngle > 60.0:
+                        Point = math.cos(yaw * math.pi / 180.0 )
                     else:
-                        # print('Focus')
-                        ResString = 'Focus'
+                        Point = 0.8 * math.cos(yaw * math.pi / 180.0 ) + 0.2 * math.sin(LipAngle * math.pi / 180.0)
 
-                    drawLine(frame, LeftTopFacePoint, RightTopFacePoint, LineColor)
-                    drawLine(frame, LeftTopFacePoint, LeftDownFacePoint, LineColor)
-                    drawLine(frame, RightTopFacePoint, RightDownFacePoint, LineColor)
-                    drawLine(frame, LeftDownFacePoint, RightDownFacePoint, LineColor)
+                    print("Point is : %.2lf, yaw: %.2lf, LipAngle : %.2lf"%(Point, yaw, LipAngle))
+
+                    if Point > 0.8:
+                        LineColor = (255, 255, 0)
+                        ResString = 'engagement'
+                    elif Point > 0.6:
+                        LineColor = (0, 255, 255)
+                        ResString = 'attention'
+                    else:
+                        LineColor = (0, 0, 255)
+                        ResString = 'disregard'
 
                     font_scale = 2
                     thickness = 2
                     x_offset = 1
                     y_offset = 1
-                    #cv2.putText(frame, ResString, (LeftTopFacePoint[0] + x_offset, LeftTopFacePoint[1] + y_offset),  cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness, cv2.LINE_AA)
-                    cv2.putText(frame, ResString, (LeftTopFacePoint[0] + x_offset, LeftTopFacePoint[1] + y_offset), cv2.FONT_HERSHEY_SIMPLEX, font_scale, LineColor, thickness, cv2.LINE_AA)
 
-
-                    OldPitch = pitch
-                    OldRoll = roll
-                    OldYaw = yaw
-
+                    drawLine(frame, LeftTopFacePoint, RightTopFacePoint, LineColor)
+                    drawLine(frame, LeftTopFacePoint, LeftDownFacePoint, LineColor)
+                    drawLine(frame, RightTopFacePoint, RightDownFacePoint, LineColor)
+                    drawLine(frame, LeftDownFacePoint, RightDownFacePoint, LineColor)
+                    cv2.putText(frame, ResString, (LeftTopFacePoint[0] + x_offset, LeftTopFacePoint[1] + y_offset),
+                                cv2.FONT_HERSHEY_SIMPLEX, font_scale, LineColor, thickness, cv2.LINE_AA)
 
                 cv2.imshow("demo", frame)
 
