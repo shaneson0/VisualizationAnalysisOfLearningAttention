@@ -2,10 +2,15 @@
 
 ### Visualization Analysis of Learning Attention Based on Single-image PnP Head Pose Estimation
 
-![Focus.jpeg](https://upload-images.jianshu.io/upload_images/5786775-e326541fdfc61552.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![image.png](https://upload-images.jianshu.io/upload_images/5786775-413ca7beebff0eb1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
-![Not Fucus.jpeg](https://upload-images.jianshu.io/upload_images/5786775-5482d6a4f4065c35.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![image.png](https://upload-images.jianshu.io/upload_images/5786775-22342ed46234d3e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+
+![image.png](https://upload-images.jianshu.io/upload_images/5786775-05d0bfdf4101ea24.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 # Introduction
 
@@ -43,7 +48,6 @@ To make the evaluation Quantization, I extract head pose eatimation's Informatio
 ```python
     Score = 0.8 * math.cos(yaw * math.pi / 180.0 ) + 0.2 * math.sin(LipAngle * math.pi / 180.0)
 ```
-
 
 What's more, I quantify the Student's Attention into a range([0,1]) which help to analyse the student's attention states dynamicly.
 
